@@ -1,0 +1,26 @@
+date,region,product,sales,units,customer_segment
+2024-01-05,North,Widget A,12400,124,Enterprise
+2024-01-08,South,Widget B,8750,175,SMB
+2024-01-12,East,Widget A,15300,153,Enterprise
+2024-01-15,West,Widget C,6200,62,Consumer
+2024-01-19,North,Widget B,9100,182,SMB
+2024-01-22,South,Widget A,11800,118,Enterprise
+2024-01-25,East,Widget C,4500,45,Consumer
+2024-02-02,West,Widget A,13200,132,Enterprise
+2024-02-06,North,Widget C,7800,78,SMB
+2024-02-10,South,Widget B,10400,208,Enterprise
+2024-02-14,East,Widget A,16700,167,Enterprise
+2024-02-18,West,Widget B,8200,164,SMB
+2024-02-22,North,Widget A,14100,141,Enterprise
+2024-02-26,South,Widget C,5900,59,Consumer
+2024-03-01,East,Widget B,11200,224,SMB
+2024-03-05,West,Widget A,9800,98,Consumer
+2024-03-09,North,Widget C,6700,67,SMB
+2024-03-13,South,Widget A,18300,183,Enterprise
+2024-03-17,East,Widget B,7600,152,Consumer
+2024-03-21,West,Widget C,8900,89,Enterprise
+2024-03-25,North,Widget A,12600,126,SMB
+2024-03-29,South,Widget B,9300,186,Consumer
+2024-04-02,East,Widget A,20100,201,Enterprise
+2024-04-06,West,Widget C,5400,54,SMB
+2024-04-10,North,Widget B,11700,234,Enterprise
