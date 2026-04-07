@@ -9,9 +9,6 @@ An AI-powered data analysis agent built with Claude (Anthropic) and Streamlit. U
 
 ---
 
-## 🚀 Live Demo
-
-👉 **[Try it here](YOUR_STREAMLIT_URL)** ← replace after deploying
 
 ---
 
