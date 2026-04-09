@@ -77,8 +77,15 @@ if "df" not in st.session_state:
     st.session_state.df = None
 if "df_name" not in st.session_state:
     st.session_state.df_name = None
+def get_env_key():
+    """Get API key from Streamlit Secrets (cloud) or .env (local)."""
+    try:
+        return st.secrets.get("ANTHROPIC_API_KEY", "")
+    except Exception:
+        return os.environ.get("ANTHROPIC_API_KEY", "")
+
 if "api_key" not in st.session_state:
-    st.session_state.api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    st.session_state.api_key = get_env_key()
 if "query_count" not in st.session_state:
     st.session_state.query_count = 0
 if "demo_mode" not in st.session_state:
@@ -106,7 +113,7 @@ with st.sidebar:
         st.session_state.api_key = api_key_input
 
     # Show query counter when running on shared/env key (no personal key entered)
-    using_shared_key = bool(os.environ.get("ANTHROPIC_API_KEY")) and not api_key_input
+    using_shared_key = bool(get_env_key()) and not api_key_input
     if using_shared_key:
         remaining = max(0, FREE_QUERY_LIMIT - st.session_state.query_count)
         st.caption(f"Free queries remaining: **{remaining} / {FREE_QUERY_LIMIT}**")
@@ -285,7 +292,7 @@ elif not st.session_state.api_key and not st.session_state.demo_mode:
     st.warning("👈 Enter your Anthropic API key in the sidebar to start chatting — or click **Try Demo** to use the shared key.")
 else:
     # Free query cap — only enforced when using the shared env key (not a personal key)
-    using_shared_key = bool(os.environ.get("ANTHROPIC_API_KEY")) and not api_key_input
+    using_shared_key = bool(get_env_key()) and not api_key_input
     if using_shared_key and st.session_state.query_count >= FREE_QUERY_LIMIT:
         st.warning(
             f"⚠️ You've used all {FREE_QUERY_LIMIT} free queries. "
@@ -325,21 +332,14 @@ else:
             try:
                 # Key resolution order:
                 # 1. Key typed in sidebar by user
-                # 2. ANTHROPIC_API_KEY env var (set in .env locally, or Streamlit Cloud Secrets)
-                # 3. Nothing — show a helpful error
-                resolved_key = (
-                    st.session_state.api_key
-                    or os.environ.get("ANTHROPIC_API_KEY", "")
-                )
+                # 2. Streamlit Secrets (cloud) or .env (local)
+                resolved_key = st.session_state.api_key or get_env_key()
                 if not resolved_key:
-                    if st.session_state.demo_mode:
-                        st.error(
-                            "❌ Demo mode requires an API key in your environment. "
-                            "Add `ANTHROPIC_API_KEY=sk-ant-...` to a `.env` file in your project root, "
-                            "then restart the app."
-                        )
-                    else:
-                        st.error("❌ No API key found. Enter your Anthropic API key in the sidebar.")
+                    st.error(
+                        "❌ No API key found. "
+                        "Enter your Anthropic API key in the sidebar, "
+                        "or add it to Streamlit Secrets (Settings → Secrets → ANTHROPIC_API_KEY)."
+                    )
                     st.stop()
                 client = anthropic.Anthropic(api_key=resolved_key)
 
