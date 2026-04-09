@@ -1,93 +1,95 @@
-# 📊 DataChat — Agentic CSV Analysis Assistant
+# 📊 DataChat
 
-An AI-powered data analysis agent built with Claude (Anthropic) and Streamlit. Upload any CSV file and ask questions about your data in plain English — DataChat writes and executes Python code to deliver insights and visualizations in real time.
+An AI-powered data analysis agent built with [Claude](https://anthropic.com) and [Streamlit](https://streamlit.io). Upload any CSV file and ask questions about your data in plain English — DataChat writes and executes Python code to deliver insights and visualizations in real time.
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red)
-![Claude](https://img.shields.io/badge/Claude-Sonnet-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
-
----
-
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/streamlit-1.32%2B-red)
+![Anthropic](https://img.shields.io/badge/claude-sonnet--4-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
 ## ✨ Features
 
-- **Natural language querying** — ask questions like "What are the top 10 customers by revenue?" without writing any code
+- **Natural language querying** — ask questions like *"What are the top 10 customers by revenue?"* without writing any code
 - **Agentic code execution** — Claude writes Python/pandas code, executes it live, and returns results
 - **Automatic visualizations** — ask for charts and get matplotlib plots rendered inline
-- **Multi-turn conversation** — follow-up questions retain context from earlier in the chat
+- **Streaming responses** — answers stream token-by-token, no waiting for the full response
+- **Multi-turn conversation** — follow-up questions retain full context from earlier in the chat
+- **Persistent chart history** — all charts from the session stay visible as you scroll
 - **Any CSV** — works on sales data, survey results, financial records, marketing data, and more
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start
 
-| Layer | Technology |
-|---|---|
-| LLM | Claude Sonnet (Anthropic API) |
-| Frontend | Streamlit |
-| Data Processing | Pandas, NumPy |
-| Visualization | Matplotlib |
-| Language | Python 3.10+ |
-
----
-
-## 📦 Local Setup
+### 1. Clone the repo
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/YOUR_USERNAME/datachat.git
 cd datachat
+```
 
-# 2. Install dependencies
+### 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 3. Run the app
+### 3. Set your API key
+
+Option A — create a `.env` file:
+```bash
+cp .env.example .env
+# edit .env and paste your ANTHROPIC_API_KEY
+```
+
+Option B — paste it directly in the app sidebar (no file needed).
+
+Get a key at [console.anthropic.com](https://console.anthropic.com).
+
+### 4. Run the app
+
+```bash
 streamlit run app.py
 ```
 
-Then open [http://localhost:8501](http://localhost:8501) in your browser.
-
-You'll need an **Anthropic API key** — get one free at [console.anthropic.com](https://console.anthropic.com).
+Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
-## ☁️ Deploy to Streamlit Cloud (Free)
+## 🧪 Try It With Sample Data
 
-1. Push this repo to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your GitHub repo
-4. Set `app.py` as the main file
-5. Deploy — your app gets a public URL instantly
+A `sample_data.csv` is included — it contains 6 months of regional product sales. Try these questions to see DataChat in action:
 
----
-
-## 💡 Example Questions to Try
-
-- *"Summarize the key trends in this dataset"*
-- *"Show a bar chart of sales by category"*
-- *"Which rows have missing values?"*
-- *"What's the correlation between price and quantity?"*
-- *"Who are the top 5 customers by total spend?"*
-- *"Create a time series plot of revenue by month"*
+- *"What is total revenue by product?"*
+- *"Show a bar chart of monthly revenue for each region"*
+- *"Which region has higher average customer ratings?"*
+- *"Are there any months with unusually high returns?"*
+- *"What's the correlation between units sold and revenue?"*
 
 ---
 
-## 🧠 How It Works
+## 🏗️ How It Works
 
 ```
-User uploads CSV → Pandas loads data → Schema + sample rows sent to Claude
-         ↓
-User asks question → Full conversation history sent to Claude API
-         ↓
-Claude generates Python/pandas code → App executes code in sandbox
-         ↓
-Results + charts rendered in Streamlit UI → User asks follow-up
+User question
+     │
+     ▼
+Claude (claude-sonnet-4)
+  ├── Receives: question + full chat history + dataset schema + sample rows
+  ├── Decides: answer directly OR write Python code
+  └── Returns: explanation + optional ```python code block
+     │
+     ▼
+Code executor (exec in sandboxed local scope)
+  ├── Runs pandas operations on the loaded DataFrame
+  ├── Saves any matplotlib charts to a unique temp file
+  └── Captures stdout (print statements)
+     │
+     ▼
+Streamlit renders: text + code output + chart image
 ```
-
-Claude receives the dataset schema, column types, summary statistics, and sample rows as context on every turn — enabling it to write accurate, data-aware code without ever hallucinating column names.
 
 ---
 
@@ -97,20 +99,53 @@ Claude receives the dataset schema, column types, summary statistics, and sample
 datachat/
 ├── app.py              # Main Streamlit application
 ├── requirements.txt    # Python dependencies
-└── README.md           # This file
+├── sample_data.csv     # Example dataset to try
+├── .env.example        # API key template
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 👤 Author
+## ⚙️ Configuration
 
-Built by **[Your Name]** — Senior Data Scientist specializing in ML deployment, media mix modeling, and agentic AI systems.
+| Variable | Where | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `.env` or sidebar | Your Anthropic API key |
+| `MODEL` | `app.py` line 13 | Claude model to use (default: `claude-sonnet-4-20250514`) |
+| `MAX_TOKENS` | `app.py` line 14 | Max tokens per response (default: `4096`) |
 
-- 🔗 [LinkedIn](YOUR_LINKEDIN)
-- 💼 [Portfolio](YOUR_PORTFOLIO)
+---
+
+## 🔒 Security Notes
+
+- API keys entered in the sidebar are stored only in Streamlit session state (browser memory) — never written to disk
+- Generated code runs in an isolated local scope with only `df`, `pd`, and `plt` available
+- Do not deploy with sensitive data without adding authentication
+
+---
+
+## 📦 Deploying to Streamlit Cloud
+
+1. Push this repo to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io) and connect your repo
+3. Add `ANTHROPIC_API_KEY` in the app's **Secrets** settings (Settings → Secrets)
+4. Deploy — users can still paste their own key in the sidebar if you prefer
+
+---
+
+## 🤝 Contributing
+
+Pull requests welcome! Some ideas for contributions:
+
+- Support for Excel (`.xlsx`) files
+- Export conversation as PDF or markdown
+- More chart types (plotly, seaborn)
+- Data cleaning suggestions
+- Auto-generated data summary on upload
 
 ---
 
 ## 📄 License
 
-MIT License — free to use, modify, and distribute.
+MIT — see [LICENSE](LICENSE).
