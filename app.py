@@ -66,7 +66,7 @@ st.markdown("""
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.title("📊 DataChat")
 st.markdown(
-    '<p class="subtitle">Upload a CSV and ask questions about your data in plain English.</p>',
+    '<p class="subtitle">Ask questions about the sample sales dataset in plain English — no code required.</p>',
     unsafe_allow_html=True
 )
 
@@ -74,9 +74,20 @@ st.markdown(
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "df" not in st.session_state:
-    st.session_state.df = None
+    # Auto-load sample dataset on first run
+    try:
+        for enc in ["utf-8", "latin-1", "windows-1252", "utf-8-sig"]:
+            try:
+                st.session_state.df = pd.read_csv(DEMO_CSV, encoding=enc)
+                break
+            except UnicodeDecodeError:
+                continue
+        else:
+            st.session_state.df = None
+    except Exception:
+        st.session_state.df = None
 if "df_name" not in st.session_state:
-    st.session_state.df_name = None
+    st.session_state.df_name = DEMO_CSV
 def get_env_key():
     """Get API key from Streamlit Secrets (cloud) or .env (local)."""
     try:
@@ -121,87 +132,32 @@ with st.sidebar:
 
     st.divider()
 
-    # Demo mode — load sample CSV without requiring an upload
-    if os.path.exists(DEMO_CSV):
-        btn_label = "🎮 Try Demo (no key needed)" if not st.session_state.demo_mode else "✅ Demo active — click to exit"
-        if st.button(btn_label, use_container_width=True):
-            if st.session_state.demo_mode:
-                # Toggle OFF — reset to blank state
-                st.session_state.demo_mode = False
-                st.session_state.df = None
-                st.session_state.df_name = None
-                st.session_state.messages = []
-                st.rerun()
-            else:
-                # Toggle ON — load demo dataset
-                try:
-                    demo_df = None
-                    for enc in ["utf-8", "latin-1", "windows-1252", "utf-8-sig"]:
-                        try:
-                            demo_df = pd.read_csv(DEMO_CSV, encoding=enc)
-                            break
-                        except UnicodeDecodeError:
-                            continue
-                    if demo_df is None:
-                        raise ValueError("Could not decode demo file")
-                    st.session_state.df = demo_df
-                    st.session_state.df_name = DEMO_CSV
-                    st.session_state.messages = []
-                    st.session_state.demo_mode = True
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Could not load demo data: {e}")
-
-        if st.session_state.demo_mode:
-            st.success("📊 A sample sales dataset has been loaded for you — start asking questions below!")
-            st.markdown("**Try asking:**")
-            for q in DEMO_QUESTIONS:
-                st.markdown(f"- *{q}*")
-            st.divider()
-
-    st.header("📁 Upload Data")
-    uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
-
-    if uploaded_file:
-        try:
-            for encoding in ["utf-8", "latin-1", "windows-1252", "utf-8-sig"]:
-                try:
-                    uploaded_file.seek(0)
-                    df = pd.read_csv(uploaded_file, encoding=encoding)
-                    break
-                except UnicodeDecodeError:
-                    continue
-            else:
-                raise ValueError("Could not decode file — try re-saving your CSV as UTF-8")
-            st.session_state.df = df
-            st.session_state.df_name = uploaded_file.name
-            st.session_state.messages = []  # reset chat on new upload
-            st.success(f"✅ Loaded {len(df):,} rows × {len(df.columns)} columns")
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-
+    # Data preview — always the sample dataset
+    st.header("🔍 Data Preview")
     if st.session_state.df is not None:
-        st.divider()
-        st.header("🔍 Data Preview")
         st.dataframe(st.session_state.df.head(5), use_container_width=True)
         st.caption(f"Columns: {', '.join(st.session_state.df.columns.tolist())}")
 
-        st.divider()
-        if st.button("🗑️ Clear Chat", use_container_width=True):
-            st.session_state.messages = []
-            st.rerun()
+    st.divider()
+    if st.button("🗑️ Clear Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
 
     st.divider()
-    st.markdown("**Example questions:**")
-    examples = [
-        "What are the top 5 values by sales?",
-        "Show a bar chart of revenue by category",
-        "Are there any missing values?",
-        "What's the correlation between columns?",
-        "Summarize the key trends in this data",
-    ]
-    for ex in examples:
-        st.markdown(f"- {ex}")
+    st.markdown("**💡 Try asking:**")
+    for q in DEMO_QUESTIONS:
+        st.markdown(f"- *{q}*")
+
+    st.divider()
+    st.markdown("**🔒 Data & Privacy**")
+    st.caption(
+        "This demo uses a public sample sales dataset. "
+        "Your questions are sent to Anthropic&#39;s Claude API to generate "
+        "analysis code — only the dataset schema and a few sample rows "
+        "are included for context. No personal data is collected or stored. "
+        "By using DataChat you agree to "
+        "[Anthropic's usage policies](https://www.anthropic.com/legal/usage-policy)."
+    )
 
 
 # ── Helper: build system prompt ────────────────────────────────────────────────
@@ -287,9 +243,9 @@ def extract_code(text: str) -> str | None:
 
 # ── Main chat area ─────────────────────────────────────────────────────────────
 if st.session_state.df is None:
-    st.info("👈 Upload a CSV file in the sidebar to get started — or click **Try Demo** to explore sample data instantly.")
-elif not st.session_state.api_key and not st.session_state.demo_mode:
-    st.warning("👈 Enter your Anthropic API key in the sidebar to start chatting — or click **Try Demo** to use the shared key.")
+    st.warning("⚠️ Could not load sample dataset. Make sure sales_data_sample.csv is in the project root.")
+elif not st.session_state.api_key:
+    st.warning("👈 Enter your Anthropic API key in the sidebar to start chatting.")
 else:
     # Free query cap — only enforced when using the shared env key (not a personal key)
     using_shared_key = bool(get_env_key()) and not api_key_input
