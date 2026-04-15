@@ -137,6 +137,13 @@ with st.sidebar:
     if st.session_state.df is not None:
         st.dataframe(st.session_state.df.head(5), use_container_width=True)
         st.caption(f"Columns: {', '.join(st.session_state.df.columns.tolist())}")
+        st.download_button(
+            label="⬇️ Download Sample CSV",
+            data=st.session_state.df.to_csv(index=False).encode("utf-8"),
+            file_name=DEMO_CSV,
+            mime="text/csv",
+            use_container_width=True,
+        )
 
     st.divider()
     if st.button("🗑️ Clear Chat", use_container_width=True):
