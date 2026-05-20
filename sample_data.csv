@@ -1,0 +1,25 @@
+month,region,product,revenue,units_sold,returns,customer_rating
+Jan,North,Widget A,12400,310,12,4.2
+Jan,South,Widget A,9800,245,8,4.5
+Jan,North,Widget B,7600,190,5,4.7
+Jan,South,Widget B,5200,130,9,3.9
+Feb,North,Widget A,13100,328,10,4.3
+Feb,South,Widget A,10500,263,11,4.4
+Feb,North,Widget B,8200,205,3,4.8
+Feb,South,Widget B,6100,153,7,4.1
+Mar,North,Widget A,15200,380,14,4.1
+Mar,South,Widget A,11900,298,9,4.6
+Mar,North,Widget B,9400,235,6,4.7
+Mar,South,Widget B,7300,183,8,4.0
+Apr,North,Widget A,14800,370,11,4.4
+Apr,South,Widget A,12300,308,13,4.3
+Apr,North,Widget B,10100,253,4,4.9
+Apr,South,Widget B,8200,205,10,3.8
+May,North,Widget A,16500,413,15,4.2
+May,South,Widget A,13700,343,12,4.5
+May,North,Widget B,11200,280,5,4.8
+May,South,Widget B,9100,228,11,4.0
+Jun,North,Widget A,17800,445,16,4.3
+Jun,South,Widget A,14900,373,10,4.6
+Jun,North,Widget B,12600,315,7,4.7
+Jun,South,Widget B,10400,260,9,4.2
