@@ -75,6 +75,11 @@ st.markdown("""
         box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2) !important;
     }
 
+    /* User avatar color — override default red */
+    [data-testid="stChatMessage"] [data-testid="chatAvatarIcon-user"] {
+        background-color: #1F4E79 !important;
+    }
+
     /* Chat message text — assistant and user bubbles */
     [data-testid="stChatMessage"] p,
     [data-testid="stChatMessage"] li,
