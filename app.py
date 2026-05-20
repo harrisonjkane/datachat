@@ -133,23 +133,30 @@ if "chart_dir" not in st.session_state:
     st.session_state.chart_dir = tempfile.mkdtemp()
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
+# Keep api_key_input defined so downstream references don't break
+api_key_input = ""
+
 with st.sidebar:
+    # Show green indicator if key already loaded, input field if not
+    if st.session_state.api_key:
+        st.success("🔑 API key loaded", icon="✅")
+        api_key_input = ""
+    else:
+        api_key_input = st.text_input(
+            "Anthropic API Key",
+            value="",
+            type="password",
+            placeholder="sk-ant-...",
+            help="Get your key at console.anthropic.com — or set ANTHROPIC_API_KEY in .env",
+            key="api_key_field",
+        )
+        if api_key_input:
+            st.session_state.api_key = api_key_input
+
     # Show query counter
     remaining = max(0, FREE_QUERY_LIMIT - st.session_state.query_count)
     st.caption(f"Free queries remaining: **{remaining} / {FREE_QUERY_LIMIT}**")
     st.progress(st.session_state.query_count / FREE_QUERY_LIMIT)
-
-    # Allow power users to paste their own key for unlimited queries
-    api_key_input = st.text_input(
-        "Have your own Anthropic API key? Paste it here for unlimited queries.",
-        value="",
-        type="password",
-        placeholder="sk-ant-... (optional)",
-        help="Get your key at console.anthropic.com",
-        key="api_key_field",
-    )
-    if api_key_input:
-        st.session_state.api_key = api_key_input
 
     st.divider()
 
