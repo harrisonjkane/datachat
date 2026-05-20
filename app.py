@@ -254,6 +254,7 @@ Rules:
 - Before using any date column check its dtype first and parse explicitly if it is object type
 - sklearn is available — import it as needed e.g. from sklearn.linear_model import LinearRegression
 - Always verify column names exist before using them
+- When calling reset_index() on a grouped Series, always use reset_index() on the groupby result directly, not on a Series — or use .reset_index(name="value") to avoid duplicate column errors
 """
 
 
