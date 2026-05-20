@@ -250,7 +250,7 @@ Rules:
 - Always use matplotlib for charts, never other libraries
 - Always call plt.close() after saving a chart
 - Print any tabular results using print(result.to_string()) so they appear in output
-- For date parsing always use pd.to_datetime(df['col'], infer_datetime_format=True, errors='coerce') — never assume date structure or use unit mappings like year/month/day separately
+- For date parsing always use pd.to_datetime(df['col'], errors='coerce') — never assume date structure or use unit mappings like year/month/day separately. Do NOT use infer_datetime_format as it was removed in pandas 2.0
 - Before using any date column check its dtype first and parse explicitly if it is object type
 - sklearn is available — import it as needed e.g. from sklearn.linear_model import LinearRegression
 - Always verify column names exist before using them
