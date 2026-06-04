@@ -1,6 +1,7 @@
 # 📊 DataChat
 
 An AI-powered data analysis agent built with [Claude](https://anthropic.com) and [Streamlit](https://streamlit.io). Upload any CSV file and ask questions about your data in plain English — DataChat writes and executes Python code to deliver insights and visualizations in real time.
+
 [🚀 Try the live app](https://datachat-data-analyzer.streamlit.app/)
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
