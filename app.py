@@ -254,7 +254,7 @@ Rules:
 - Before using any date column check its dtype first and parse explicitly if it is object type
 - sklearn is available — import it as needed e.g. from sklearn.linear_model import LinearRegression
 - Always verify column names exist before using them
-- Never use fontweight as a legend argument — it is not supported. Use prop={"weight": "bold"} if bold legend text is needed
+- Never pass fontweight or any font styling arguments directly to legend() — it is not supported
 - When calling reset_index() on a grouped Series, always use reset_index() on the groupby result directly, not on a Series — or use .reset_index(name="value") to avoid duplicate column errors
 """
 
@@ -278,6 +278,7 @@ def execute_code(code: str, df: pd.DataFrame, chart_dir: str):
         "df": df.copy(),
         "pd": pd,
         "plt": plt,
+        "matplotlib": matplotlib,
     }
     saved_chart = None
     error = None
