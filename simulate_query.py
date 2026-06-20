@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CSV = "spotify_2014_2020_dataset.csv"
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"
 MAX_TOKENS = 4096
 QUESTION = "What are the ten newest songs by release date?"
 

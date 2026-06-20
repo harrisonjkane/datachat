@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── Constants ──────────────────────────────────────────────────────────────────
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"
 MAX_TOKENS = 4096
 FREE_QUERY_LIMIT = 10  # queries allowed before asking for a personal API key
 
